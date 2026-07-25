@@ -62,27 +62,8 @@ The dashboard currently generates simulated sensor values but is designed so tha
 
 ---
 
-## ⚙️ Installation
-
-Clone the repository
-
-```bash
-git clone https://github.com/your-username/terra-01-dashboard.git
-```
-
-Open the project
-
-```bash
-cd terra-01-dashboard
-```
-
-Launch
-
-```
-Open index.html in your browser
-```
-
----
+## Live Demo
+Deploy link:https://prasad-telkar.github.io/sensor-monitoring-dashboard/
 
 ## 🤝 Contributing
 
@@ -107,8 +88,7 @@ Prasad Telkar
 
 Electronics & Telecommunication Engineering Student
 
-- GitHub: https://github.com/your-username
-- LinkedIn: https://linkedin.com/in/your-linkedin
+- GitHub: https://github.com/Prasad-Telkar
 
 ---
 
