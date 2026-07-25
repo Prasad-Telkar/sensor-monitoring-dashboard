@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TERRA-01 · Environmental Telemetry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brand">
+      <div class="brand-mark">T1</div>
+      <div>
+        <div class="brand-name">TERRA&#8209;01</div>
+        <div class="brand-sub">ENV. TELEMETRY NODE</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="#live">Live</a>
+      <a href="#history">History</a>
+      <a href="#uses">Uses</a>
+      <a href="#future">Roadmap</a>
+    </div>
+    <div class="status-pill"><span class="dot"></span> STREAMING</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero" style="border-bottom:1px solid var(--line);">
+    <div class="eyebrow">Final Project — Web Development Internship</div>
+    <h1>A live console for the sensors you already built. <span>Reading the room, in real time.</span></h1>
+    <p>TERRA-01 is a browser dashboard for an ESP32-based environmental monitoring node — temperature, humidity, and light, streamed and logged the way an actual telemetry console would show them. This build runs on simulated readings so it can demo anywhere, no hardware required.</p>
+    <div class="hero-meta">
+      <div class="meta-item"><div class="meta-label">Node ID</div><div class="meta-value">TERRA-01-A4F2</div></div>
+      <div class="meta-item"><div class="meta-label">Firmware</div><div class="meta-value">v0.9.3-sim</div></div>
+      <div class="meta-item"><div class="meta-label">Uptime</div><div class="meta-value" id="uptime">00:00:00</div></div>
+      <div class="meta-item"><div class="meta-label">Packets RX</div><div class="meta-value" id="packets">0</div></div>
+    </div>
+  </section>
+
+  <section id="live">
+    <div class="sec-head">
+      <div class="sec-title">Introduction — Live Readings</div>
+      <div class="sec-index">01 / SENSOR ARRAY</div>
+    </div>
+    <p style="color:var(--text-dim); font-size:14px; max-width:640px; margin:-10px 0 26px;">Three sensors report every two seconds. Each card shows the current value, its safe operating range, and a fill bar scaled to that range — the same at-a-glance read you'd want on an actual embedded dashboard.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-label"><span>Temperature</span><span id="temp-tag" class="tag ok">OK</span></div>
+        <div class="card-value" id="temp-val">--<span class="unit">°C</span></div>
+        <div class="card-range">RANGE 18–32°C</div>
+        <div class="card-bar"><div class="card-bar-fill" id="temp-bar" style="background:var(--green);"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-label"><span>Humidity</span><span id="hum-tag" class="tag ok">OK</span></div>
+        <div class="card-value" id="hum-val">--<span class="unit">%RH</span></div>
+        <div class="card-range">RANGE 30–70%RH</div>
+        <div class="card-bar"><div class="card-bar-fill" id="hum-bar" style="background:var(--teal);"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-label"><span>Light</span><span id="lux-tag" class="tag ok">OK</span></div>
+        <div class="card-value" id="lux-val">--<span class="unit">lux</span></div>
+        <div class="card-range">RANGE 0–1000 lux</div>
+        <div class="card-bar"><div class="card-bar-fill" id="lux-bar" style="background:var(--amber);"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-label"><span>Signal</span><span class="tag ok">OK</span></div>
+        <div class="card-value" id="rssi-val">--<span class="unit">dBm</span></div>
+        <div class="card-range">WI-FI · CH 6</div>
+        <div class="card-bar"><div class="card-bar-fill" id="rssi-bar" style="background:var(--blue);"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">Working — Signal Over Time</div>
+      <div class="sec-index">02 / LAST 60 SAMPLES</div>
+    </div>
+    <div class="chart-panel">
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--green);"></div>Temperature (°C)</div>
+        <div class="legend-item"><div class="legend-swatch" style="background:var(--teal);"></div>Humidity (%RH)</div>
+      </div>
+      <svg id="chart" viewBox="0 0 1000 260" preserveAspectRatio="none"></svg>
+    </div>
+    <p style="color:var(--text-dim); font-size:13.5px; max-width:680px; margin-top:18px; line-height:1.6;">
+      The node samples its DHT22 and LDR every two seconds, packages the readings as JSON, and (in the physical build) publishes them over Wi-Fi to a broker or REST endpoint. This dashboard would subscribe to that stream; here, a small generator produces realistic drift so the interface can be demoed without hardware on hand.
+    </p>
+  </section>
+
+  <section id="history">
+    <div class="sec-head">
+      <div class="sec-title">Working — Logged History</div>
+      <div class="sec-index">03 / RECENT ENTRIES</div>
+    </div>
+    <div style="border:1px solid var(--line); background:var(--panel); overflow-x:auto;">
+      <table>
+        <thead><tr><th>Time</th><th>Temp</th><th>Humidity</th><th>Light</th><th>Status</th></tr></thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="uses">
+    <div class="sec-head">
+      <div class="sec-title">Uses</div>
+      <div class="sec-index">04 / APPLICATIONS</div>
+    </div>
+    <div class="two-col">
+      <div class="col-panel">
+        <h3>Where this fits</h3>
+        <ul class="use-list">
+          <li>Home environment monitoring — track a room's comfort levels and get an early read on damp, heat, or poor ventilation.</li>
+          <li>Server/electronics cabinet watch — flag conditions that risk hardware before a fault happens.</li>
+          <li>Greenhouse or grow-tent monitoring — keep humidity and light within a target band for plants.</li>
+          <li>Lab or storage rooms — log conditions for equipment or materials sensitive to temperature swings.</li>
+          <li>Coursework and portfolio demo — a genuine full-stack slice: sensor logic, data flow, and a console UI, in one place.</li>
+        </ul>
+      </div>
+      <div class="col-panel">
+        <h3>How it would run for real</h3>
+        <ul class="use-list">
+          <li>ESP32 reads DHT22 (temp/humidity) and an LDR (light) on a timer.</li>
+          <li>Readings are sent as JSON over Wi-Fi, either to a lightweight HTTP endpoint or an MQTT broker.</li>
+          <li>A backend stores each reading with a timestamp for the history table.</li>
+          <li>This dashboard polls or subscribes to that feed and renders it live, exactly as it does now with simulated data.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">Advantages &amp; Disadvantages</div>
+      <div class="sec-index">05 / TRADE-OFFS</div>
+    </div>
+    <div class="adv-dis">
+      <div class="adv">
+        <h3>Advantages</h3>
+        <ul>
+          <li>Cheap to build — an ESP32 and two sensors cost a fraction of commercial monitoring hardware.</li>
+          <li>Remote visibility — check conditions from any browser instead of walking over to a room.</li>
+          <li>Extensible — same pattern scales to more sensors (CO₂, soil moisture, sound) without redesigning the dashboard.</li>
+          <li>Fast to demo — the web layer works standalone, so it can be shown before hardware is finalized.</li>
+        </ul>
+      </div>
+      <div class="dis">
+        <h3>Disadvantages</h3>
+        <ul>
+          <li>Depends on Wi-Fi — a dropped connection means a gap in the data, not a graceful fallback.</li>
+          <li>No alerting yet — right now it's a dashboard, not a system that pages you when a threshold is crossed.</li>
+          <li>Single-node design — this version reads one board; monitoring multiple rooms needs a proper backend and device registry.</li>
+          <li>Simulated data here — the live demo doesn't reflect real sensor noise or hardware failure modes.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="future" style="border-bottom:none;">
+    <div class="sec-head">
+      <div class="sec-title">Future Scope</div>
+      <div class="sec-index">06 / ROADMAP</div>
+    </div>
+    <div class="roadmap">
+      <div class="road-item">
+        <div class="road-tag">Near term</div>
+        <h4>Real hardware feed</h4>
+        <p>Replace the simulator with actual MQTT/HTTP data from the ESP32, so the dashboard shows genuine sensor readings.</p>
+      </div>
+      <div class="road-item">
+        <div class="road-tag">Mid term</div>
+        <h4>Threshold alerts</h4>
+        <p>Push a browser or email notification when a reading exits its safe range, closing the loop from "visible" to "actionable".</p>
+      </div>
+      <div class="road-item">
+        <div class="road-tag">Long term</div>
+        <h4>Multi-node fleet view</h4>
+        <p>Support several TERRA nodes across rooms or sites, with a fleet overview and per-node drill-down.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap foot-row">
+    <p>TERRA-01 &middot; Simulated telemetry demo &middot; Built for Vault of Codes final task</p>
+    <p>All sensor values generated client-side</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
